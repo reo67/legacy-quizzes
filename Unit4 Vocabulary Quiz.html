@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Unit 4 Vocabulary Quiz — LEGACY English</title>
+<style>
+  :root{
+    --bg:#F7F3EC;
+    --paper:#FFFDF9;
+    --card:#F1EADD;
+    --brown-dark:#2B1B10;
+    --brown-mid:#7A5B3F;
+    --accent:#B08D5E;
+    --accent-light:#C9A876;
+    --good:#3F6C4A;
+    --good-bg:#E7F1E9;
+    --bad:#A2402E;
+    --bad-bg:#F7E7E2;
+    --line:#E1D5C0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--brown-dark);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:18px 12px 60px;
+  }
+  .sheet{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--paper);
+    border:1.5px solid var(--brown-mid);
+    border-radius:14px;
+    padding:22px 20px 28px;
+    position:relative;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px solid var(--accent-light);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:14px;
+    margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    width:42px;height:42px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:16px;
+  }
+  .brand-text{line-height:1.25;}
+  .brand-name{font-size:11px;letter-spacing:1.5px;color:var(--brown-mid);font-weight:700;text-transform:uppercase;}
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:22px;margin:2px 0 0;color:var(--brown-dark);
+  }
+  .subtitle{font-size:13px;color:var(--brown-mid);margin-top:2px;font-style:italic;}
+
+  .progress-wrap{margin:6px 0 22px;}
+  .progress-track{
+    height:6px;background:var(--card);border-radius:4px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent-light);
+    transition:width .25s ease;
+  }
+  .progress-label{font-size:12px;color:var(--brown-mid);margin-top:6px;text-align:right;}
+
+  .question{
+    background:var(--card);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    margin-bottom:14px;
+  }
+  .q-meta{margin-bottom:8px;}
+  .q-num{
+    font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;color:var(--accent);font-size:14px;
+  }
+  .q-text{font-size:15.5px;line-height:1.5;margin-bottom:10px;color:var(--brown-dark);}
+  .q-text .blank{
+    display:inline-block;min-width:70px;border-bottom:2px solid var(--brown-mid);
+  }
+
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option{
+    display:flex;align-items:center;gap:10px;
+    background:var(--paper);border:1.5px solid var(--line);
+    border-radius:8px;padding:9px 12px;cursor:pointer;
+    font-size:14.5px;transition:border-color .15s ease;
+  }
+  .option:hover{border-color:var(--accent-light);}
+  .option input{accent-color:var(--accent);width:16px;height:16px;flex:none;}
+  .option.selected{border-color:var(--accent);background:#FBF6EE;}
+
+  .feedback{
+    margin-top:10px;padding:9px 12px;border-radius:8px;
+    font-size:13.5px;line-height:1.45;display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--good-bg);color:var(--good);}
+  .feedback.incorrect{background:var(--bad-bg);color:var(--bad);}
+  .feedback b{display:block;margin-bottom:2px;}
+
+  .question.locked .option{opacity:.75;pointer-events:none;}
+  .question.locked .option.was-correct{opacity:1;border-color:var(--good);background:var(--good-bg);}
+  .question.locked .option.was-wrong{opacity:1;border-color:var(--bad);background:var(--bad-bg);}
+
+  .actions{margin-top:8px;text-align:center;}
+  button{
+    font-family:inherit;font-size:15px;font-weight:700;
+    padding:13px 30px;border-radius:30px;border:none;
+    cursor:pointer;letter-spacing:.3px;
+  }
+  #checkBtn{
+    background:var(--brown-dark);color:#F7F3EC;
+  }
+  #checkBtn:disabled{opacity:.5;cursor:not-allowed;}
+  #retryBtn{
+    background:var(--paper);color:var(--brown-dark);
+    border:1.5px solid var(--brown-mid);margin-top:10px;
+  }
+
+  .score-panel{
+    display:none;text-align:center;margin:6px 0 22px;
+    padding:22px 16px;border-radius:12px;
+    background:var(--card);
+  }
+  .score-panel.show{display:block;}
+  .seal{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,serif;
+  }
+  .seal .num{font-size:26px;font-weight:700;line-height:1;}
+  .seal .den{font-size:11px;opacity:.85;}
+  .score-msg{font-family:Georgia,serif;font-size:19px;color:var(--brown-dark);margin-bottom:4px;}
+  .score-sub{font-size:13px;color:var(--brown-mid);}
+
+  .not-answered-hint{
+    font-size:12.5px;color:var(--bad);text-align:center;margin-top:6px;display:none;
+  }
+  .not-answered-hint.show{display:block;}
+
+  footer{
+    margin-top:22px;padding-top:14px;border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .dua{
+    font-size:12px;color:var(--brown-mid);direction:rtl;line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="logo">LE</div>
+    <div class="brand-text">
+      <div class="brand-name">Legacy English · Vocabulary</div>
+      <h1>Unit 4 Quiz</h1>
+      <div class="subtitle">Complete the sentence — 15 multiple-choice questions</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 15 answered</div>
+  </div>
+
+  <div id="scorePanel" class="score-panel">
+    <div class="seal"><span class="num" id="scoreNum">0</span><span class="den">/ 15</span></div>
+    <div class="score-msg" id="scoreMsg">Nice work!</div>
+    <div class="score-sub" id="scoreSub"></div>
+    <button id="retryBtn" onclick="resetQuiz()">Try Again</button>
+  </div>
+
+  <div id="quizRoot"></div>
+
+  <div class="actions">
+    <button id="checkBtn" onclick="checkAnswers()">Check My Answers</button>
+    <div class="not-answered-hint" id="notAnsweredHint">Please answer every question before checking.</div>
+  </div>
+
+  <footer>
+    <div class="dua">اللهم ادخلني مُدخل صِدق واخرجني مُخرج صِدق واجعل لي من لدنك سلطانًا نصيرا</div>
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Question bank — Unit 4 Vocabulary (Challenges)
+// Complete the sentence with the correct word. All English. Ordered easy -> hard.
+// ---------------------------------------------------------------
+const QUESTIONS = [
+  {
+    text: "He decided to <span class='blank'>&nbsp;</span> university after finishing school.",
+    options: ["enter", "close", "crawl"],
+    correct: "enter",
+    explain: "Correct: <b>enter</b> — يدخل. To enter means to go into or join, like starting university."
+  },
+  {
+    text: "The <span class='blank'>&nbsp;</span> shook the whole city and damaged many buildings.",
+    options: ["earthquake", "accident", "distance"],
+    correct: "earthquake",
+    explain: "Correct: <b>earthquake</b> — هزة أرضية. An earthquake is a sudden, violent shaking of the ground."
+  },
+  {
+    text: "She has a strong <span class='blank'>&nbsp;</span> to become a doctor one day.",
+    options: ["ambition", "evidence", "score"],
+    correct: "ambition",
+    explain: "Correct: <b>ambition</b> — طموح. Ambition is a strong desire to achieve something."
+  },
+  {
+    text: "He is very <span class='blank'>&nbsp;</span>; he always finishes his work on time.",
+    options: ["hard-working", "lucky", "dead"],
+    correct: "hard-working",
+    explain: "Correct: <b>hard-working</b> — مجتهد. Someone hard-working puts a lot of effort into what they do."
+  },
+  {
+    text: "They set up a <span class='blank'>&nbsp;</span> near the river to spend the night.",
+    options: ["tent", "cube", "brush"],
+    correct: "tent",
+    explain: "Correct: <b>tent</b> — خيمة. A tent is a portable shelter used for camping."
+  },
+  {
+    text: "The climbers used a <span class='blank'>&nbsp;</span> to help them reach the top safely.",
+    options: ["rope", "puzzle", "toy"],
+    correct: "rope",
+    explain: "Correct: <b>rope</b> — حبل. A rope is a strong cord used for climbing or pulling."
+  },
+  {
+    text: "It took him three tries to finally <span class='blank'>&nbsp;</span> the crossword.",
+    options: ["solve", "break", "cut"],
+    correct: "solve",
+    explain: "Correct: <b>solve</b> — يحل. To solve means to find the answer to a problem or puzzle."
+  },
+  {
+    text: "The doctor examined the broken <span class='blank'>&nbsp;</span> in her arm.",
+    options: ["bone", "evidence", "score"],
+    correct: "bone",
+    explain: "Correct: <b>bone</b> — عظم. A bone is one of the hard parts that make up a skeleton."
+  },
+  {
+    text: "After years of hard work, she finally <span class='blank'>&nbsp;</span> her dream.",
+    options: ["achieved", "crawled", "entered"],
+    correct: "achieved",
+    explain: "Correct: <b>achieved</b> — حقق. To achieve means to successfully reach a goal."
+  },
+  {
+    text: "He was very <span class='blank'>&nbsp;</span> during the difficult training program.",
+    options: ["patient", "dead", "lucky"],
+    correct: "patient",
+    explain: "Correct: <b>patient</b> — صبور. Someone patient stays calm and doesn't give up easily during difficulty."
+  },
+  {
+    text: "The police collected <span class='blank'>&nbsp;</span> from the accident scene.",
+    options: ["evidence", "geometry", "distance"],
+    correct: "evidence",
+    explain: "Correct: <b>evidence</b> — دليل. Evidence is information that helps prove something is true."
+  },
+  {
+    text: "It's important to stay <span class='blank'>&nbsp;</span> during an emergency.",
+    options: ["calm", "dead", "current"],
+    correct: "calm",
+    explain: "Correct: <b>calm</b> — هادئ. Staying calm means remaining relaxed and not panicking."
+  },
+  {
+    text: "We found a nice <span class='blank'>&nbsp;</span> to set up our tent for the night.",
+    options: ["campsite", "cube", "trail"],
+    correct: "campsite",
+    explain: "Correct: <b>campsite</b> — مكان التخييم. A campsite is a place where people can camp."
+  },
+  {
+    text: "She studies <span class='blank'>&nbsp;</span> because she loves shapes and space.",
+    options: ["geometry", "architecture", "mechanics"],
+    correct: "geometry",
+    explain: "Correct: <b>geometry</b> — علم الهندسة. Geometry is the branch of math dealing with shapes and space."
+  },
+  {
+    text: "He was <span class='blank'>&nbsp;</span> to survive the accident with only minor injuries.",
+    options: ["lucky", "dead", "current"],
+    correct: "lucky",
+    explain: "Correct: <b>lucky</b> — محظوظ. Someone lucky has good fortune, especially in a difficult situation."
+  }
+];
+
+// ---------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------
+const root = document.getElementById("quizRoot");
+let locked = false;
+
+function escapeAttr(s){ return s.replace(/"/g, "&quot;"); }
+
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement("div");
+  card.className = "question";
+  card.id = "q" + i;
+
+  let inner = `
+    <div class="q-meta"><span class="q-num">Question ${i + 1} / ${QUESTIONS.length}</span></div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+  `;
+  q.options.forEach((opt) => {
+    inner += `
+      <label class="option" data-qi="${i}">
+        <input type="radio" name="q${i}" value="${escapeAttr(opt)}" onchange="onAnswerChange(${i})">
+        <span>${opt}</span>
+      </label>`;
+  });
+  inner += `</div><div class="feedback" id="feedback${i}"></div>`;
+
+  card.innerHTML = inner;
+  root.appendChild(card);
+});
+
+function onAnswerChange(i){
+  const card = document.getElementById("q" + i);
+  card.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  const checked = card.querySelector("input[name='q" + i + "']:checked");
+  if (checked) checked.closest(".option").classList.add("selected");
+  updateProgress();
+}
+
+function getAnswer(i){
+  const checked = document.querySelector("input[name='q" + i + "']:checked");
+  return checked ? checked.value : null;
+}
+
+function updateProgress(){
+  let answered = 0;
+  QUESTIONS.forEach((q, i) => { if (getAnswer(i)) answered++; });
+  document.getElementById("progressFill").style.width = (answered / QUESTIONS.length * 100) + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + QUESTIONS.length + " answered";
+  return answered;
+}
+
+function checkAnswers(){
+  if (locked) return;
+  const answered = updateProgress();
+  const hint = document.getElementById("notAnsweredHint");
+  if (answered < QUESTIONS.length) {
+    hint.classList.add("show");
+    return;
+  }
+  hint.classList.remove("show");
+
+  let score = 0;
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    const fb = document.getElementById("feedback" + i);
+    const userAns = getAnswer(i);
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) score++;
+
+    card.querySelectorAll(".option").forEach(opt => {
+      const val = opt.querySelector("input").value;
+      if (val === q.correct) opt.classList.add("was-correct");
+      else if (val === userAns) opt.classList.add("was-wrong");
+    });
+
+    fb.className = "feedback show " + (isCorrect ? "correct" : "incorrect");
+    fb.innerHTML = (isCorrect ? "<b>Correct ✓</b>" : "<b>Not quite ✗</b>") + q.explain;
+    card.classList.add("locked");
+  });
+
+  locked = true;
+  document.getElementById("checkBtn").disabled = true;
+  showScore(score);
+  document.getElementById("scorePanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showScore(score){
+  const panel = document.getElementById("scorePanel");
+  document.getElementById("scoreNum").textContent = score;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg, sub;
+  if (pct >= 90) { msg = "Excellent work!"; sub = "You've mastered Present Simple & Present Continuous."; }
+  else if (pct >= 70) { msg = "Well done!"; sub = "A solid grasp — review the notes on any missed questions."; }
+  else if (pct >= 50) { msg = "Good effort."; sub = "Go back over the explanations below, then try again."; }
+  else { msg = "Keep practicing."; sub = "Review Unit 1 grammar, then take the quiz again."; }
+  document.getElementById("scoreMsg").textContent = msg;
+  document.getElementById("scoreSub").textContent = sub;
+  panel.classList.add("show");
+}
+
+function resetQuiz(){
+  locked = false;
+  document.getElementById("checkBtn").disabled = false;
+  document.getElementById("scorePanel").classList.remove("show");
+  document.getElementById("notAnsweredHint").classList.remove("show");
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    card.classList.remove("locked");
+    const fb = document.getElementById("feedback" + i);
+    fb.className = "feedback";
+    fb.innerHTML = "";
+    card.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    card.querySelectorAll(".option").forEach(o => o.classList.remove("selected", "was-correct", "was-wrong"));
+  });
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
