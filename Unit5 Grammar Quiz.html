@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Unit 5 Grammar Quiz — LEGACY English</title>
+<style>
+  :root{
+    --bg:#F7F3EC;
+    --paper:#FFFDF9;
+    --card:#F1EADD;
+    --brown-dark:#2B1B10;
+    --brown-mid:#7A5B3F;
+    --accent:#6B4A32;
+    --accent-light:#C9A876;
+    --good:#3F6C4A;
+    --good-bg:#E7F1E9;
+    --bad:#A2402E;
+    --bad-bg:#F7E7E2;
+    --line:#E1D5C0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--brown-dark);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:18px 12px 60px;
+  }
+  .sheet{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--paper);
+    border:1.5px solid var(--brown-mid);
+    border-radius:14px;
+    padding:22px 20px 28px;
+    position:relative;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px solid var(--accent-light);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:14px;
+    margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    width:42px;height:42px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:16px;
+  }
+  .brand-text{line-height:1.25;}
+  .brand-name{font-size:11px;letter-spacing:1.5px;color:var(--brown-mid);font-weight:700;text-transform:uppercase;}
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:22px;margin:2px 0 0;color:var(--brown-dark);
+  }
+  .subtitle{font-size:13px;color:var(--brown-mid);margin-top:2px;font-style:italic;}
+
+  .progress-wrap{margin:6px 0 22px;}
+  .progress-track{
+    height:6px;background:var(--card);border-radius:4px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent-light);
+    transition:width .25s ease;
+  }
+  .progress-label{font-size:12px;color:var(--brown-mid);margin-top:6px;text-align:right;}
+
+  .question{
+    background:var(--card);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    margin-bottom:14px;
+  }
+  .q-meta{margin-bottom:8px;}
+  .q-num{
+    font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;color:var(--accent);font-size:14px;
+  }
+  .q-text{font-size:15.5px;line-height:1.5;margin-bottom:10px;color:var(--brown-dark);}
+  .q-text .blank{
+    display:inline-block;min-width:70px;border-bottom:2px solid var(--brown-mid);
+  }
+
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option{
+    display:flex;align-items:center;gap:10px;
+    background:var(--paper);border:1.5px solid var(--line);
+    border-radius:8px;padding:9px 12px;cursor:pointer;
+    font-size:14.5px;transition:border-color .15s ease;
+  }
+  .option:hover{border-color:var(--accent-light);}
+  .option input{accent-color:var(--accent);width:16px;height:16px;flex:none;}
+  .option.selected{border-color:var(--accent);background:#FBF6EE;}
+
+  .feedback{
+    margin-top:10px;padding:9px 12px;border-radius:8px;
+    font-size:13.5px;line-height:1.45;display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--good-bg);color:var(--good);}
+  .feedback.incorrect{background:var(--bad-bg);color:var(--bad);}
+  .feedback b{display:block;margin-bottom:2px;}
+
+  .question.locked .option{opacity:.75;pointer-events:none;}
+  .question.locked .option.was-correct{opacity:1;border-color:var(--good);background:var(--good-bg);}
+  .question.locked .option.was-wrong{opacity:1;border-color:var(--bad);background:var(--bad-bg);}
+
+  .actions{margin-top:8px;text-align:center;}
+  button{
+    font-family:inherit;font-size:15px;font-weight:700;
+    padding:13px 30px;border-radius:30px;border:none;
+    cursor:pointer;letter-spacing:.3px;
+  }
+  #checkBtn{
+    background:var(--brown-dark);color:#F7F3EC;
+  }
+  #checkBtn:disabled{opacity:.5;cursor:not-allowed;}
+  #retryBtn{
+    background:var(--paper);color:var(--brown-dark);
+    border:1.5px solid var(--brown-mid);margin-top:10px;
+  }
+
+  .score-panel{
+    display:none;text-align:center;margin:6px 0 22px;
+    padding:22px 16px;border-radius:12px;
+    background:var(--card);
+  }
+  .score-panel.show{display:block;}
+  .seal{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,serif;
+  }
+  .seal .num{font-size:26px;font-weight:700;line-height:1;}
+  .seal .den{font-size:11px;opacity:.85;}
+  .score-msg{font-family:Georgia,serif;font-size:19px;color:var(--brown-dark);margin-bottom:4px;}
+  .score-sub{font-size:13px;color:var(--brown-mid);}
+
+  .not-answered-hint{
+    font-size:12.5px;color:var(--bad);text-align:center;margin-top:6px;display:none;
+  }
+  .not-answered-hint.show{display:block;}
+
+  footer{
+    margin-top:22px;padding-top:14px;border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .dua{
+    font-size:12px;color:var(--brown-mid);direction:rtl;line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="logo">LE</div>
+    <div class="brand-text">
+      <div class="brand-name">Legacy English · Grammar</div>
+      <h1>Unit 5 Quiz</h1>
+      <div class="subtitle">Quantifiers &amp; Articles — 15 multiple-choice questions</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 15 answered</div>
+  </div>
+
+  <div id="scorePanel" class="score-panel">
+    <div class="seal"><span class="num" id="scoreNum">0</span><span class="den">/ 15</span></div>
+    <div class="score-msg" id="scoreMsg">Nice work!</div>
+    <div class="score-sub" id="scoreSub"></div>
+    <button id="retryBtn" onclick="resetQuiz()">Try Again</button>
+  </div>
+
+  <div id="quizRoot"></div>
+
+  <div class="actions">
+    <button id="checkBtn" onclick="checkAnswers()">Check My Answers</button>
+    <div class="not-answered-hint" id="notAnsweredHint">Please answer every question before checking.</div>
+  </div>
+
+  <footer>
+    <div class="dua">اللهم ادخلني مُدخل صِدق واخرجني مُخرج صِدق واجعل لي من لدنك سلطانًا نصيرا</div>
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Question bank — Unit 5 Grammar: Quantifiers & Articles
+// Multiple choice only. Ordered easy -> hard.
+// ---------------------------------------------------------------
+const QUESTIONS = [
+  {
+    text: "We recycle <span class='blank'>&nbsp;</span> paper every week.",
+    options: ["a lot of", "much", "many"],
+    correct: "a lot of",
+    explain: "Correct: <b>a lot of</b>. \"A lot of\" works with both countable and uncountable nouns."
+  },
+  {
+    text: "How <span class='blank'>&nbsp;</span> cans did you collect?",
+    options: ["many", "much", "a lot"],
+    correct: "many",
+    explain: "Correct: <b>many</b>. \"Cans\" is countable, so \"many\" is used in questions."
+  },
+  {
+    text: "There isn't <span class='blank'>&nbsp;</span> plastic left in the bin.",
+    options: ["much", "many", "a few"],
+    correct: "much",
+    explain: "Correct: <b>much</b>. \"Plastic\" is uncountable, so \"much\" is used in negatives."
+  },
+  {
+    text: "I found <span class='blank'>&nbsp;</span> old glass jar in the garden.",
+    options: ["an", "a", "the"],
+    correct: "an",
+    explain: "Correct: <b>an</b>. \"An\" is used before a vowel sound, as in \"old\"."
+  },
+  {
+    text: "Which sentence is correct?",
+    options: ["I don't have some money.", "I don't have any money.", "I have any money."],
+    correct: "I don't have any money.",
+    explain: "Correct: <b>I don't have any money.</b> \"Any\" is used in negative sentences, not \"some\"."
+  },
+  {
+    text: "We bought <span class='blank'>&nbsp;</span> plastic bottles yesterday.",
+    options: ["some", "any", "much"],
+    correct: "some",
+    explain: "Correct: <b>some</b>. \"Some\" is used in affirmative sentences for a neutral amount."
+  },
+  {
+    text: "There's <span class='blank'>&nbsp;</span> little plastic left in the bottle.",
+    options: ["a", "an", "the"],
+    correct: "a",
+    explain: "Correct: <b>a</b>. \"A little\" shows a small amount of an uncountable noun."
+  },
+  {
+    text: "Which sentence uses \"the\" correctly?",
+    options: ["The bottle I found was blue.", "A bottle I found was blue.", "Bottle I found was blue."],
+    correct: "The bottle I found was blue.",
+    explain: "Correct: <b>The bottle I found was blue.</b> \"The\" is used because the bottle was already mentioned."
+  },
+  {
+    text: "I found <span class='blank'>&nbsp;</span> cardboard boxes behind the shop.",
+    options: ["a few", "a little", "much"],
+    correct: "a few",
+    explain: "Correct: <b>a few</b>. \"Boxes\" is countable, so \"a few\" is used for a small amount."
+  },
+  {
+    text: "We don't use <span class='blank'>&nbsp;</span> metal in this factory.",
+    options: ["much", "many", "a few"],
+    correct: "much",
+    explain: "Correct: <b>much</b>. \"Metal\" is uncountable, so \"much\" is used in negatives."
+  },
+  {
+    text: "Which sentence is correct?",
+    options: ["I saw an elephant at the zoo.", "I saw a elephant at the zoo.", "I saw the elephant at the zoo."],
+    correct: "I saw an elephant at the zoo.",
+    explain: "Correct: <b>I saw an elephant at the zoo.</b> \"An\" is used before a vowel sound, and this is the first mention."
+  },
+  {
+    text: "There are <span class='blank'>&nbsp;</span> plastic bottles in the ocean.",
+    options: ["a lot of", "much", "a little"],
+    correct: "a lot of",
+    explain: "Correct: <b>a lot of</b>. \"Bottles\" is countable and plural, so \"a lot of\" fits, not \"much\"."
+  },
+  {
+    text: "Which sentence is correct?",
+    options: ["How much bottles did you recycle?", "How many bottles did you recycle?", "How many bottle did you recycle?"],
+    correct: "How many bottles did you recycle?",
+    explain: "Correct: <b>How many bottles did you recycle?</b> \"Bottles\" is countable and plural, so \"many\" is correct."
+  },
+  {
+    text: "She has <span class='blank'>&nbsp;</span> experience in recycling programs.",
+    options: ["a little", "a few", "many"],
+    correct: "a little",
+    explain: "Correct: <b>a little</b>. \"Experience\" is uncountable, so \"a little\" is used for a small amount."
+  },
+  {
+    text: "Which sentence correctly uses articles?",
+    options: ["The sun rises in the east.", "A sun rises in the east.", "Sun rises in the east."],
+    correct: "The sun rises in the east.",
+    explain: "Correct: <b>The sun rises in the east.</b> \"The\" is used for unique things like the sun."
+  }
+];
+
+// ---------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------
+const root = document.getElementById("quizRoot");
+let locked = false;
+
+function escapeAttr(s){ return s.replace(/"/g, "&quot;"); }
+
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement("div");
+  card.className = "question";
+  card.id = "q" + i;
+
+  let inner = `
+    <div class="q-meta"><span class="q-num">Question ${i + 1} / ${QUESTIONS.length}</span></div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+  `;
+  q.options.forEach((opt) => {
+    inner += `
+      <label class="option" data-qi="${i}">
+        <input type="radio" name="q${i}" value="${escapeAttr(opt)}" onchange="onAnswerChange(${i})">
+        <span>${opt}</span>
+      </label>`;
+  });
+  inner += `</div><div class="feedback" id="feedback${i}"></div>`;
+
+  card.innerHTML = inner;
+  root.appendChild(card);
+});
+
+function onAnswerChange(i){
+  const card = document.getElementById("q" + i);
+  card.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  const checked = card.querySelector("input[name='q" + i + "']:checked");
+  if (checked) checked.closest(".option").classList.add("selected");
+  updateProgress();
+}
+
+function getAnswer(i){
+  const checked = document.querySelector("input[name='q" + i + "']:checked");
+  return checked ? checked.value : null;
+}
+
+function updateProgress(){
+  let answered = 0;
+  QUESTIONS.forEach((q, i) => { if (getAnswer(i)) answered++; });
+  document.getElementById("progressFill").style.width = (answered / QUESTIONS.length * 100) + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + QUESTIONS.length + " answered";
+  return answered;
+}
+
+function checkAnswers(){
+  if (locked) return;
+  const answered = updateProgress();
+  const hint = document.getElementById("notAnsweredHint");
+  if (answered < QUESTIONS.length) {
+    hint.classList.add("show");
+    return;
+  }
+  hint.classList.remove("show");
+
+  let score = 0;
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    const fb = document.getElementById("feedback" + i);
+    const userAns = getAnswer(i);
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) score++;
+
+    card.querySelectorAll(".option").forEach(opt => {
+      const val = opt.querySelector("input").value;
+      if (val === q.correct) opt.classList.add("was-correct");
+      else if (val === userAns) opt.classList.add("was-wrong");
+    });
+
+    fb.className = "feedback show " + (isCorrect ? "correct" : "incorrect");
+    fb.innerHTML = (isCorrect ? "<b>Correct ✓</b>" : "<b>Not quite ✗</b>") + q.explain;
+    card.classList.add("locked");
+  });
+
+  locked = true;
+  document.getElementById("checkBtn").disabled = true;
+  showScore(score);
+  document.getElementById("scorePanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showScore(score){
+  const panel = document.getElementById("scorePanel");
+  document.getElementById("scoreNum").textContent = score;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg, sub;
+  if (pct >= 90) { msg = "Excellent work!"; sub = "You've mastered Present Simple & Present Continuous."; }
+  else if (pct >= 70) { msg = "Well done!"; sub = "A solid grasp — review the notes on any missed questions."; }
+  else if (pct >= 50) { msg = "Good effort."; sub = "Go back over the explanations below, then try again."; }
+  else { msg = "Keep practicing."; sub = "Review Unit 1 grammar, then take the quiz again."; }
+  document.getElementById("scoreMsg").textContent = msg;
+  document.getElementById("scoreSub").textContent = sub;
+  panel.classList.add("show");
+}
+
+function resetQuiz(){
+  locked = false;
+  document.getElementById("checkBtn").disabled = false;
+  document.getElementById("scorePanel").classList.remove("show");
+  document.getElementById("notAnsweredHint").classList.remove("show");
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    card.classList.remove("locked");
+    const fb = document.getElementById("feedback" + i);
+    fb.className = "feedback";
+    fb.innerHTML = "";
+    card.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    card.querySelectorAll(".option").forEach(o => o.classList.remove("selected", "was-correct", "was-wrong"));
+  });
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
