@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Final Grammar Review — LEGACY English</title>
+<style>
+  :root{
+    --bg:#F7F3EC;
+    --paper:#FFFDF9;
+    --card:#F1EADD;
+    --brown-dark:#2B1B10;
+    --brown-mid:#7A5B3F;
+    --accent:#6B4A32;
+    --accent-light:#C9A876;
+    --good:#3F6C4A;
+    --good-bg:#E7F1E9;
+    --bad:#A2402E;
+    --bad-bg:#F7E7E2;
+    --line:#E1D5C0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--brown-dark);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:18px 12px 60px;
+  }
+  .sheet{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--paper);
+    border:1.5px solid var(--brown-mid);
+    border-radius:14px;
+    padding:22px 20px 28px;
+    position:relative;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px solid var(--accent-light);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:14px;
+    margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    width:42px;height:42px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:16px;
+  }
+  .brand-text{line-height:1.25;}
+  .brand-name{font-size:11px;letter-spacing:1.5px;color:var(--brown-mid);font-weight:700;text-transform:uppercase;}
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:22px;margin:2px 0 0;color:var(--brown-dark);
+  }
+  .subtitle{font-size:13px;color:var(--brown-mid);margin-top:2px;font-style:italic;}
+
+  .progress-wrap{margin:6px 0 22px;}
+  .progress-track{
+    height:6px;background:var(--card);border-radius:4px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent-light);
+    transition:width .25s ease;
+  }
+  .progress-label{font-size:12px;color:var(--brown-mid);margin-top:6px;text-align:right;}
+
+  .question{
+    background:var(--card);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    margin-bottom:14px;
+  }
+  .q-meta{margin-bottom:8px;}
+  .q-num{
+    font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;color:var(--accent);font-size:14px;
+  }
+  .q-text{font-size:15.5px;line-height:1.5;margin-bottom:10px;color:var(--brown-dark);}
+  .q-text .blank{
+    display:inline-block;min-width:70px;border-bottom:2px solid var(--brown-mid);
+  }
+
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option{
+    display:flex;align-items:center;gap:10px;
+    background:var(--paper);border:1.5px solid var(--line);
+    border-radius:8px;padding:9px 12px;cursor:pointer;
+    font-size:14.5px;transition:border-color .15s ease;
+  }
+  .option:hover{border-color:var(--accent-light);}
+  .option input{accent-color:var(--accent);width:16px;height:16px;flex:none;}
+  .option.selected{border-color:var(--accent);background:#FBF6EE;}
+
+  .feedback{
+    margin-top:10px;padding:9px 12px;border-radius:8px;
+    font-size:13.5px;line-height:1.45;display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--good-bg);color:var(--good);}
+  .feedback.incorrect{background:var(--bad-bg);color:var(--bad);}
+  .feedback b{display:block;margin-bottom:2px;}
+
+  .question.locked .option{opacity:.75;pointer-events:none;}
+  .question.locked .option.was-correct{opacity:1;border-color:var(--good);background:var(--good-bg);}
+  .question.locked .option.was-wrong{opacity:1;border-color:var(--bad);background:var(--bad-bg);}
+
+  .actions{margin-top:8px;text-align:center;}
+  button{
+    font-family:inherit;font-size:15px;font-weight:700;
+    padding:13px 30px;border-radius:30px;border:none;
+    cursor:pointer;letter-spacing:.3px;
+  }
+  #checkBtn{
+    background:var(--brown-dark);color:#F7F3EC;
+  }
+  #checkBtn:disabled{opacity:.5;cursor:not-allowed;}
+  #retryBtn{
+    background:var(--paper);color:var(--brown-dark);
+    border:1.5px solid var(--brown-mid);margin-top:10px;
+  }
+
+  .score-panel{
+    display:none;text-align:center;margin:6px 0 22px;
+    padding:22px 16px;border-radius:12px;
+    background:var(--card);
+  }
+  .score-panel.show{display:block;}
+  .seal{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,serif;
+  }
+  .seal .num{font-size:26px;font-weight:700;line-height:1;}
+  .seal .den{font-size:11px;opacity:.85;}
+  .score-msg{font-family:Georgia,serif;font-size:19px;color:var(--brown-dark);margin-bottom:4px;}
+  .score-sub{font-size:13px;color:var(--brown-mid);}
+
+  .not-answered-hint{
+    font-size:12.5px;color:var(--bad);text-align:center;margin-top:6px;display:none;
+  }
+  .not-answered-hint.show{display:block;}
+
+  footer{
+    margin-top:22px;padding-top:14px;border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .dua{
+    font-size:12px;color:var(--brown-mid);direction:rtl;line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="logo">LE</div>
+    <div class="brand-text">
+      <div class="brand-name">Legacy English · Grammar</div>
+      <h1>Final Review</h1>
+      <div class="subtitle">Units 1-6 — 40 multiple-choice questions</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 15 answered</div>
+  </div>
+
+  <div id="scorePanel" class="score-panel">
+    <div class="seal"><span class="num" id="scoreNum">0</span><span class="den">/ 15</span></div>
+    <div class="score-msg" id="scoreMsg">Nice work!</div>
+    <div class="score-sub" id="scoreSub"></div>
+    <button id="retryBtn" onclick="resetQuiz()">Try Again</button>
+  </div>
+
+  <div id="quizRoot"></div>
+
+  <div class="actions">
+    <button id="checkBtn" onclick="checkAnswers()">Check My Answers</button>
+    <div class="not-answered-hint" id="notAnsweredHint">Please answer every question before checking.</div>
+  </div>
+
+  <footer>
+    <div class="dua">اللهم ادخلني مُدخل صِدق واخرجني مُخرج صِدق واجعل لي من لدنك سلطانًا نصيرا</div>
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Question bank — Final Grammar Review: Units 1-6
+// Multiple choice only. 40 questions, ~evenly spread across all 6 grammar points.
+// All sentences are fresh — none repeat the slide decks or the individual unit quizzes.
+// ---------------------------------------------------------------
+const QUESTIONS = [
+  // Unit 1 — Present Simple & Present Continuous
+  { unit: "Unit 1", text: "My brother <span class='blank'>&nbsp;</span> breakfast every morning.", options: ["eats", "eat", "eating"], correct: "eats", explain: "Correct: <b>eats</b>. With he/she/it in the present simple, add -s to the base verb." },
+  { unit: "Unit 1", text: "Right now, the kids <span class='blank'>&nbsp;</span> in the garden.", options: ["play", "are playing", "played"], correct: "are playing", explain: "Correct: <b>are playing</b>. \"Right now\" signals an action in progress \u2192 present continuous." },
+  { unit: "Unit 1", text: "Which sentence is correct?", options: ["She don't drink coffee.", "She doesn't drink coffee.", "She not drink coffee."], correct: "She doesn't drink coffee.", explain: "Correct: <b>She doesn't drink coffee.</b> Third-person negatives use doesn't + base verb." },
+  { unit: "Unit 1", text: "We <span class='blank'>&nbsp;</span> usually stay up late on weekdays.", options: ["don't", "doesn't", "not"], correct: "don't", explain: "Correct: <b>don't</b>. \"We\" takes \"don't\" in present simple negatives." },
+  { unit: "Unit 1", text: "Look! The baby <span class='blank'>&nbsp;</span> at the dog.", options: ["laughs", "is laughing", "laughed"], correct: "is laughing", explain: "Correct: <b>is laughing</b>. \"Look!\" signals something happening right now." },
+  { unit: "Unit 1", text: "Which sentence is correct?", options: ["Does he plays tennis?", "Does he play tennis?", "Does he playing tennis?"], correct: "Does he play tennis?", explain: "Correct: <b>Does he play tennis?</b> After \"does\", the main verb stays in its base form." },
+  { unit: "Unit 1", text: "These days, fewer people <span class='blank'>&nbsp;</span> newspapers.", options: ["read", "reads", "are reading"], correct: "are reading", explain: "Correct: <b>are reading</b>. \"These days\" signals a changing trend \u2192 present continuous." },
+
+  // Unit 2 — Modal Verbs for Rules & -ing Form
+  { unit: "Unit 2", text: "Visitors <span class='blank'>&nbsp;</span> take photos here \u2014 it's allowed.", options: ["can", "must", "mustn't"], correct: "can", explain: "Correct: <b>can</b>. \"Can\" expresses permission." },
+  { unit: "Unit 2", text: "Which sentence is correct?", options: ["You mustn't park here.", "You not must park here.", "You don't must park here."], correct: "You mustn't park here.", explain: "Correct: <b>You mustn't park here.</b> \"Mustn't\" is the correct negative form for prohibition." },
+  { unit: "Unit 2", text: "She's excellent at <span class='blank'>&nbsp;</span> languages.", options: ["learn", "learning", "learned"], correct: "learning", explain: "Correct: <b>learning</b>. The -ing form is used after prepositions like \"at\"." },
+  { unit: "Unit 2", text: "Employees <span class='blank'>&nbsp;</span> wear a uniform \u2014 it's compulsory.", options: ["must", "can", "don't have to"], correct: "must", explain: "Correct: <b>must</b>. \"Must\" expresses obligation." },
+  { unit: "Unit 2", text: "Which sentence is correct?", options: ["He avoids to eat sugar.", "He avoids eating sugar.", "He avoid eating sugar."], correct: "He avoids eating sugar.", explain: "Correct: <b>He avoids eating sugar.</b> \"Avoid\" is followed by the -ing form." },
+  { unit: "Unit 2", text: "You <span class='blank'>&nbsp;</span> bring an umbrella, but it might be useful.", options: ["don't have to", "mustn't", "can't"], correct: "don't have to", explain: "Correct: <b>don't have to</b>. This means it's optional, not required." },
+  { unit: "Unit 2", text: "Which sentence correctly uses the -ing form as the subject?", options: ["Reading before bed helps me relax.", "Read before bed help me relax.", "To reading before bed helps me relax."], correct: "Reading before bed helps me relax.", explain: "Correct: <b>Reading before bed helps me relax.</b> The -ing form can act as the subject of a sentence." },
+
+  // Unit 3 — Comparatives, Superlatives & as...as
+  { unit: "Unit 3", text: "This laptop is <span class='blank'>&nbsp;</span> than my old one.", options: ["lighter", "more light", "lightest"], correct: "lighter", explain: "Correct: <b>lighter</b>. One-syllable adjectives take -er in the comparative." },
+  { unit: "Unit 3", text: "This is <span class='blank'>&nbsp;</span> restaurant in town.", options: ["popular", "more popular", "the most popular"], correct: "the most popular", explain: "Correct: <b>the most popular</b>. Longer adjectives use \"the most\" in the superlative." },
+  { unit: "Unit 3", text: "Which sentence is correct?", options: ["My sister is as tall as me.", "My sister is tall as me.", "My sister is as taller as me."], correct: "My sister is as tall as me.", explain: "Correct: <b>My sister is as tall as me.</b> \"As + adjective + as\" shows equality." },
+  { unit: "Unit 3", text: "This apartment is <span class='blank'>&nbsp;</span> than the one downtown.", options: ["expensiver", "more expensive", "expensive"], correct: "more expensive", explain: "Correct: <b>more expensive</b>. Longer adjectives use \"more\", not -er." },
+  { unit: "Unit 3", text: "Her new phone isn't <span class='blank'>&nbsp;</span> mine.", options: ["as good as", "gooder than", "as good than"], correct: "as good as", explain: "Correct: <b>as good as</b>. The negative comparison uses \"not as...as\"." },
+  { unit: "Unit 3", text: "Which sentence shows a big difference?", options: ["This road is a little busier than that one.", "This road is a lot busier than that one.", "This road is busier a bit than that one."], correct: "This road is a lot busier than that one.", explain: "Correct: <b>This road is a lot busier than that one.</b> \"A lot\" shows a big difference." },
+  { unit: "Unit 3", text: "This is <span class='blank'>&nbsp;</span> storm we've had all year.", options: ["worse", "the worst", "more bad"], correct: "the worst", explain: "Correct: <b>the worst</b>. \"Bad\" is irregular: bad \u2192 worse \u2192 worst." },
+
+  // Unit 4 — Past Simple & Past Continuous
+  { unit: "Unit 4", text: "He <span class='blank'>&nbsp;</span> his keys somewhere in the office yesterday.", options: ["lost", "lose", "losing"], correct: "lost", explain: "Correct: <b>lost</b>. \"Lose\" is irregular in the past simple." },
+  { unit: "Unit 4", text: "I <span class='blank'>&nbsp;</span> a book when the power went out.", options: ["was reading", "read", "reads"], correct: "was reading", explain: "Correct: <b>was reading</b>. The longer background action takes past continuous." },
+  { unit: "Unit 4", text: "Which sentence is correct?", options: ["Did they finished the report?", "Did they finish the report?", "Did they finishes the report?"], correct: "Did they finish the report?", explain: "Correct: <b>Did they finish the report?</b> After \"did\", the main verb stays in base form." },
+  { unit: "Unit 4", text: "While she <span class='blank'>&nbsp;</span>, her phone rang.", options: ["was driving", "drove", "drives"], correct: "was driving", explain: "Correct: <b>was driving</b>. \"While\" introduces the longer, in-progress action." },
+  { unit: "Unit 4", text: "We <span class='blank'>&nbsp;</span> home when it began to snow.", options: ["were walking", "walked", "walk"], correct: "were walking", explain: "Correct: <b>were walking</b>. This is the background action interrupted by the snow starting." },
+  { unit: "Unit 4", text: "Which sentence is correct?", options: ["I was arrive late to the meeting.", "I arrived late to the meeting.", "I arriving late to the meeting."], correct: "I arrived late to the meeting.", explain: "Correct: <b>I arrived late to the meeting.</b> A single completed past action uses past simple." },
+  { unit: "Unit 4", text: "They <span class='blank'>&nbsp;</span> any problems during the trip.", options: ["didn't have", "not had", "didn't had"], correct: "didn't have", explain: "Correct: <b>didn't have</b>. Past simple negatives use didn't + base verb." },
+
+  // Unit 5 — Quantifiers & Articles
+  { unit: "Unit 5", text: "There are <span class='blank'>&nbsp;</span> apples left in the basket.", options: ["a few", "much", "a little"], correct: "a few", explain: "Correct: <b>a few</b>. \"Apples\" is countable, so \"a few\" is used for a small amount." },
+  { unit: "Unit 5", text: "How <span class='blank'>&nbsp;</span> sugar do you take in your tea?", options: ["much", "many", "a lot"], correct: "much", explain: "Correct: <b>much</b>. \"Sugar\" is uncountable, so \"much\" is used in questions." },
+  { unit: "Unit 5", text: "I need <span class='blank'>&nbsp;</span> advice about my career.", options: ["some", "any", "many"], correct: "some", explain: "Correct: <b>some</b>. \"Some\" is used in affirmative sentences for a neutral amount." },
+  { unit: "Unit 5", text: "Which sentence uses an article correctly?", options: ["She is the best student in the class.", "She is a best student in the class.", "She is best student in the class."], correct: "She is the best student in the class.", explain: "Correct: <b>She is the best student in the class.</b> \"The\" is used with superlatives." },
+  { unit: "Unit 5", text: "We don't have <span class='blank'>&nbsp;</span> time before the meeting starts.", options: ["much", "many", "a few"], correct: "much", explain: "Correct: <b>much</b>. \"Time\" is uncountable, so \"much\" is used in negatives." },
+  { unit: "Unit 5", text: "Which sentence is correct?", options: ["I bought a umbrella yesterday.", "I bought an umbrella yesterday.", "I bought the umbrella yesterday."], correct: "I bought an umbrella yesterday.", explain: "Correct: <b>I bought an umbrella yesterday.</b> \"An\" is used before a vowel sound, and this is the first mention." },
+
+  // Unit 6 — to + Infinitive & Future Forms
+  { unit: "Unit 6", text: "She agreed <span class='blank'>&nbsp;</span> the project by Friday.", options: ["to finish", "finishing", "finish"], correct: "to finish", explain: "Correct: <b>to finish</b>. \"Agree\" is followed by \"to + base verb\"." },
+  { unit: "Unit 6", text: "I'm <span class='blank'>&nbsp;</span> visit my cousins next summer.", options: ["going to", "will", "go to"], correct: "going to", explain: "Correct: <b>going to</b>. \"Be going to\" expresses a general intention." },
+  { unit: "Unit 6", text: "Which sentence correctly shows a fixed, arranged plan?", options: ["I'm flying to Rome on Tuesday.", "I'm going to fly to Rome.", "I'll fly to Rome."], correct: "I'm flying to Rome on Tuesday.", explain: "Correct: <b>I'm flying to Rome on Tuesday.</b> The present continuous is used for fixed, arranged plans." },
+  { unit: "Unit 6", text: "It was exciting <span class='blank'>&nbsp;</span> the new manager.", options: ["to meet", "meeting", "meet"], correct: "to meet", explain: "Correct: <b>to meet</b>. \"To + infinitive\" is used after adjectives like \"exciting\"." },
+  { unit: "Unit 6", text: "Which sentence correctly uses \"will\" as an offer?", options: ["I'm going to answer that email for you.", "I'll answer that email for you.", "I answer that email for you."], correct: "I'll answer that email for you.", explain: "Correct: <b>I'll answer that email for you.</b> \"Will\" is used for spontaneous offers." },
+  { unit: "Unit 6", text: "He needs <span class='blank'>&nbsp;</span> harder to win the competition.", options: ["to train", "training", "train"], correct: "to train", explain: "Correct: <b>to train</b>. \"Need\" is followed by \"to + base verb\"." },
+];
+
+// ---------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------
+const root = document.getElementById("quizRoot");
+let locked = false;
+
+function escapeAttr(s){ return s.replace(/"/g, "&quot;"); }
+
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement("div");
+  card.className = "question";
+  card.id = "q" + i;
+
+  let inner = `
+    <div class="q-meta"><span class="q-num">Question ${i + 1} / ${QUESTIONS.length}</span> <span style="font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--brown-mid);background:var(--paper);padding:3px 8px;border-radius:20px;border:1px solid var(--line);margin-left:8px;">${q.unit}</span></div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+  `;
+  q.options.forEach((opt) => {
+    inner += `
+      <label class="option" data-qi="${i}">
+        <input type="radio" name="q${i}" value="${escapeAttr(opt)}" onchange="onAnswerChange(${i})">
+        <span>${opt}</span>
+      </label>`;
+  });
+  inner += `</div><div class="feedback" id="feedback${i}"></div>`;
+
+  card.innerHTML = inner;
+  root.appendChild(card);
+});
+
+function onAnswerChange(i){
+  const card = document.getElementById("q" + i);
+  card.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  const checked = card.querySelector("input[name='q" + i + "']:checked");
+  if (checked) checked.closest(".option").classList.add("selected");
+  updateProgress();
+}
+
+function getAnswer(i){
+  const checked = document.querySelector("input[name='q" + i + "']:checked");
+  return checked ? checked.value : null;
+}
+
+function updateProgress(){
+  let answered = 0;
+  QUESTIONS.forEach((q, i) => { if (getAnswer(i)) answered++; });
+  document.getElementById("progressFill").style.width = (answered / QUESTIONS.length * 100) + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + QUESTIONS.length + " answered";
+  return answered;
+}
+
+function checkAnswers(){
+  if (locked) return;
+  const answered = updateProgress();
+  const hint = document.getElementById("notAnsweredHint");
+  if (answered < QUESTIONS.length) {
+    hint.classList.add("show");
+    return;
+  }
+  hint.classList.remove("show");
+
+  let score = 0;
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    const fb = document.getElementById("feedback" + i);
+    const userAns = getAnswer(i);
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) score++;
+
+    card.querySelectorAll(".option").forEach(opt => {
+      const val = opt.querySelector("input").value;
+      if (val === q.correct) opt.classList.add("was-correct");
+      else if (val === userAns) opt.classList.add("was-wrong");
+    });
+
+    fb.className = "feedback show " + (isCorrect ? "correct" : "incorrect");
+    fb.innerHTML = (isCorrect ? "<b>Correct ✓</b>" : "<b>Not quite ✗</b>") + q.explain;
+    card.classList.add("locked");
+  });
+
+  locked = true;
+  document.getElementById("checkBtn").disabled = true;
+  showScore(score);
+  document.getElementById("scorePanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showScore(score){
+  const panel = document.getElementById("scorePanel");
+  document.getElementById("scoreNum").textContent = score;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg, sub;
+  if (pct >= 90) { msg = "Excellent work!"; sub = "You've mastered Present Simple & Present Continuous."; }
+  else if (pct >= 70) { msg = "Well done!"; sub = "A solid grasp — review the notes on any missed questions."; }
+  else if (pct >= 50) { msg = "Good effort."; sub = "Go back over the explanations below, then try again."; }
+  else { msg = "Keep practicing."; sub = "Review Unit 1 grammar, then take the quiz again."; }
+  document.getElementById("scoreMsg").textContent = msg;
+  document.getElementById("scoreSub").textContent = sub;
+  panel.classList.add("show");
+}
+
+function resetQuiz(){
+  locked = false;
+  document.getElementById("checkBtn").disabled = false;
+  document.getElementById("scorePanel").classList.remove("show");
+  document.getElementById("notAnsweredHint").classList.remove("show");
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    card.classList.remove("locked");
+    const fb = document.getElementById("feedback" + i);
+    fb.className = "feedback";
+    fb.innerHTML = "";
+    card.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    card.querySelectorAll(".option").forEach(o => o.classList.remove("selected", "was-correct", "was-wrong"));
+  });
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+updateProgress();
+</script>
+</body>
+</html>

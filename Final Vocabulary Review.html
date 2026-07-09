@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Final Vocabulary Review — LEGACY English</title>
+<style>
+  :root{
+    --bg:#F7F3EC;
+    --paper:#FFFDF9;
+    --card:#F1EADD;
+    --brown-dark:#2B1B10;
+    --brown-mid:#7A5B3F;
+    --accent:#B08D5E;
+    --accent-light:#C9A876;
+    --good:#3F6C4A;
+    --good-bg:#E7F1E9;
+    --bad:#A2402E;
+    --bad-bg:#F7E7E2;
+    --line:#E1D5C0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--brown-dark);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:18px 12px 60px;
+  }
+  .sheet{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--paper);
+    border:1.5px solid var(--brown-mid);
+    border-radius:14px;
+    padding:22px 20px 28px;
+    position:relative;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px solid var(--accent-light);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:14px;
+    margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    width:42px;height:42px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:16px;
+  }
+  .brand-text{line-height:1.25;}
+  .brand-name{font-size:11px;letter-spacing:1.5px;color:var(--brown-mid);font-weight:700;text-transform:uppercase;}
+  h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:22px;margin:2px 0 0;color:var(--brown-dark);
+  }
+  .subtitle{font-size:13px;color:var(--brown-mid);margin-top:2px;font-style:italic;}
+
+  .progress-wrap{margin:6px 0 22px;}
+  .progress-track{
+    height:6px;background:var(--card);border-radius:4px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent-light);
+    transition:width .25s ease;
+  }
+  .progress-label{font-size:12px;color:var(--brown-mid);margin-top:6px;text-align:right;}
+
+  .question{
+    background:var(--card);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    margin-bottom:14px;
+  }
+  .q-meta{margin-bottom:8px;}
+  .q-num{
+    font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;color:var(--accent);font-size:14px;
+  }
+  .q-text{font-size:15.5px;line-height:1.5;margin-bottom:10px;color:var(--brown-dark);}
+  .q-text .blank{
+    display:inline-block;min-width:70px;border-bottom:2px solid var(--brown-mid);
+  }
+
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option{
+    display:flex;align-items:center;gap:10px;
+    background:var(--paper);border:1.5px solid var(--line);
+    border-radius:8px;padding:9px 12px;cursor:pointer;
+    font-size:14.5px;transition:border-color .15s ease;
+  }
+  .option:hover{border-color:var(--accent-light);}
+  .option input{accent-color:var(--accent);width:16px;height:16px;flex:none;}
+  .option.selected{border-color:var(--accent);background:#FBF6EE;}
+
+  .feedback{
+    margin-top:10px;padding:9px 12px;border-radius:8px;
+    font-size:13.5px;line-height:1.45;display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--good-bg);color:var(--good);}
+  .feedback.incorrect{background:var(--bad-bg);color:var(--bad);}
+  .feedback b{display:block;margin-bottom:2px;}
+
+  .question.locked .option{opacity:.75;pointer-events:none;}
+  .question.locked .option.was-correct{opacity:1;border-color:var(--good);background:var(--good-bg);}
+  .question.locked .option.was-wrong{opacity:1;border-color:var(--bad);background:var(--bad-bg);}
+
+  .actions{margin-top:8px;text-align:center;}
+  button{
+    font-family:inherit;font-size:15px;font-weight:700;
+    padding:13px 30px;border-radius:30px;border:none;
+    cursor:pointer;letter-spacing:.3px;
+  }
+  #checkBtn{
+    background:var(--brown-dark);color:#F7F3EC;
+  }
+  #checkBtn:disabled{opacity:.5;cursor:not-allowed;}
+  #retryBtn{
+    background:var(--paper);color:var(--brown-dark);
+    border:1.5px solid var(--brown-mid);margin-top:10px;
+  }
+
+  .score-panel{
+    display:none;text-align:center;margin:6px 0 22px;
+    padding:22px 16px;border-radius:12px;
+    background:var(--card);
+  }
+  .score-panel.show{display:block;}
+  .seal{
+    width:84px;height:84px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,#8A6A4A 0%,#5A3E29 55%,#2B1B10 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#F7F3EC;font-family:Georgia,serif;
+  }
+  .seal .num{font-size:26px;font-weight:700;line-height:1;}
+  .seal .den{font-size:11px;opacity:.85;}
+  .score-msg{font-family:Georgia,serif;font-size:19px;color:var(--brown-dark);margin-bottom:4px;}
+  .score-sub{font-size:13px;color:var(--brown-mid);}
+
+  .not-answered-hint{
+    font-size:12.5px;color:var(--bad);text-align:center;margin-top:6px;display:none;
+  }
+  .not-answered-hint.show{display:block;}
+
+  footer{
+    margin-top:22px;padding-top:14px;border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .dua{
+    font-size:12px;color:var(--brown-mid);direction:rtl;line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="logo">LE</div>
+    <div class="brand-text">
+      <div class="brand-name">Legacy English · Vocabulary</div>
+      <h1>Final Review</h1>
+      <div class="subtitle">Units 1-6 vocabulary — 70 multiple-choice questions</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 15 answered</div>
+  </div>
+
+  <div id="scorePanel" class="score-panel">
+    <div class="seal"><span class="num" id="scoreNum">0</span><span class="den">/ 15</span></div>
+    <div class="score-msg" id="scoreMsg">Nice work!</div>
+    <div class="score-sub" id="scoreSub"></div>
+    <button id="retryBtn" onclick="resetQuiz()">Try Again</button>
+  </div>
+
+  <div id="quizRoot"></div>
+
+  <div class="actions">
+    <button id="checkBtn" onclick="checkAnswers()">Check My Answers</button>
+    <div class="not-answered-hint" id="notAnsweredHint">Please answer every question before checking.</div>
+  </div>
+
+  <footer>
+    <div class="dua">اللهم ادخلني مُدخل صِدق واخرجني مُخرج صِدق واجعل لي من لدنك سلطانًا نصيرا</div>
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Question bank — Final Vocabulary Review: Units 1-6
+// Multiple choice only. 70 questions, evenly spread across all 6 units.
+// Only words NOT already tested in the individual unit quizzes are used here.
+// ---------------------------------------------------------------
+const QUESTIONS = [
+  // Unit 1
+  { unit: "Unit 1", text: "On weekends, she loves <span class='blank'>&nbsp;</span> in the mountains.", options: ["hiking", "surfing", "yoga"], correct: "hiking", explain: "Correct: <b>hiking</b> — المشي على الأقدام / رحلة سير." },
+  { unit: "Unit 1", text: "He practices <span class='blank'>&nbsp;</span> every morning to relax his mind and body.", options: ["yoga", "surfing", "hiking"], correct: "yoga", explain: "Correct: <b>yoga</b> — رياضة اليوغا." },
+  { unit: "Unit 1", text: "We spent the evening playing <span class='blank'>&nbsp;</span> with our family.", options: ["board games", "musical instruments", "social media"], correct: "board games", explain: "Correct: <b>board games</b> — ألعاب الطاولة." },
+  { unit: "Unit 1", text: "She can play the guitar; it's her favorite <span class='blank'>&nbsp;</span>.", options: ["musical instrument", "board game", "explorer"], correct: "musical instrument", explain: "Correct: <b>musical instrument</b> — آلة موسيقية." },
+  { unit: "Unit 1", text: "He spends too much time scrolling through <span class='blank'>&nbsp;</span>.", options: ["social media", "board games", "musical instruments"], correct: "social media", explain: "Correct: <b>social media</b> — وسائل التواصل الاجتماعي." },
+  { unit: "Unit 1", text: "As a child, she dreamed of being an <span class='blank'>&nbsp;</span> who traveled to unknown places.", options: ["explorer", "spouse", "surname"], correct: "explorer", explain: "Correct: <b>explorer</b> — المكتشف." },
+  { unit: "Unit 1", text: "After the massage, I felt completely <span class='blank'>&nbsp;</span>.", options: ["relaxed", "an emergency", "an address"], correct: "relaxed", explain: "Correct: <b>relaxed</b> — مسترخي." },
+  { unit: "Unit 1", text: "Please write your <span class='blank'>&nbsp;</span> in the box marked \"family name.\"", options: ["surname", "address", "spouse"], correct: "surname", explain: "Correct: <b>surname</b> — اسم العائلة." },
+  { unit: "Unit 1", text: "Write your home <span class='blank'>&nbsp;</span> clearly on the envelope.", options: ["address", "surname", "emergency"], correct: "address", explain: "Correct: <b>address</b> — عنوان." },
+  { unit: "Unit 1", text: "In case of <span class='blank'>&nbsp;</span>, call this number immediately.", options: ["emergency", "address", "surname"], correct: "emergency", explain: "Correct: <b>emergency</b> — طوارئ." },
+  { unit: "Unit 1", text: "Bring your <span class='blank'>&nbsp;</span>'s ID card to the appointment.", options: ["spouse", "surname", "emergency"], correct: "spouse", explain: "Correct: <b>spouse</b> — الزوج / الزوجة." },
+  { unit: "Unit 1", text: "He learned to ride the waves while <span class='blank'>&nbsp;</span> in Hawaii.", options: ["surfing", "hiking", "doing yoga"], correct: "surfing", explain: "Correct: <b>surfing</b> — ركوب الأمواج." },
+
+  // Unit 2
+  { unit: "Unit 2", text: "Our team won the national <span class='blank'>&nbsp;</span> this year.", options: ["championship", "rule", "prize"], correct: "championship", explain: "Correct: <b>championship</b> — بطولة." },
+  { unit: "Unit 2", text: "The <span class='blank'>&nbsp;</span> dived to block the shot and saved the goal.", options: ["goalkeeper", "athlete", "champion"], correct: "goalkeeper", explain: "Correct: <b>goalkeeper</b> — حارس مرمى." },
+  { unit: "Unit 2", text: "As a professional <span class='blank'>&nbsp;</span>, she trains every day.", options: ["athlete", "goalkeeper", "crowd"], correct: "athlete", explain: "Correct: <b>athlete</b> — رياضي." },
+  { unit: "Unit 2", text: "Every sport has a <span class='blank'>&nbsp;</span> about how many players can be on the field.", options: ["rule", "talent", "prize"], correct: "rule", explain: "Correct: <b>rule</b> — قانون." },
+  { unit: "Unit 2", text: "<span class='blank'>&nbsp;</span> is a sport where two people try to force each other to the ground.", options: ["Wrestling", "Throwing", "Fitness"], correct: "Wrestling", explain: "Correct: <b>Wrestling</b> — مصارعة." },
+  { unit: "Unit 2", text: "He used all his strength to <span class='blank'>&nbsp;</span> the ball across the field.", options: ["throw", "wave", "fit"], correct: "throw", explain: "Correct: <b>throw</b> — يرمي." },
+  { unit: "Unit 2", text: "The winning team began to <span class='blank'>&nbsp;</span> their flags in celebration.", options: ["wave", "throw", "fit"], correct: "wave", explain: "Correct: <b>wave</b> — يلوّح بيده." },
+  { unit: "Unit 2", text: "She stays <span class='blank'>&nbsp;</span> by exercising every day.", options: ["fit", "crazy", "hard"], correct: "fit", explain: "Correct: <b>fit</b> — لائق بدنيًا." },
+  { unit: "Unit 2", text: "He has a natural <span class='blank'>&nbsp;</span> for painting.", options: ["talent", "prize", "crowd"], correct: "talent", explain: "Correct: <b>talent</b> — موهبة." },
+  { unit: "Unit 2", text: "After winning three years in a row, she became a true <span class='blank'>&nbsp;</span>.", options: ["champion", "rival", "crowd"], correct: "champion", explain: "Correct: <b>champion</b> — بطل." },
+  { unit: "Unit 2", text: "The winner received a large cash <span class='blank'>&nbsp;</span>.", options: ["prize", "crowd", "talent"], correct: "prize", explain: "Correct: <b>prize</b> — جائزة." },
+  { unit: "Unit 2", text: "A huge <span class='blank'>&nbsp;</span> gathered outside the stadium before the match.", options: ["crowd", "champion", "prize"], correct: "crowd", explain: "Correct: <b>crowd</b> — حشد / جمهور." },
+
+  // Unit 3
+  { unit: "Unit 3", text: "We crossed the river by <span class='blank'>&nbsp;</span> instead of driving around.", options: ["ferry", "camel", "gate"], correct: "ferry", explain: "Correct: <b>ferry</b> — عبّارة." },
+  { unit: "Unit 3", text: "We were stuck in a <span class='blank'>&nbsp;</span> for over an hour this morning.", options: ["traffic jam", "receipt", "gate"], correct: "traffic jam", explain: "Correct: <b>traffic jam</b> — الازدحام المروري." },
+  { unit: "Unit 3", text: "In winter, the lake can completely <span class='blank'>&nbsp;</span>.", options: ["freeze", "suggest", "become convenient"], correct: "freeze", explain: "Correct: <b>freeze</b> — يتجمد." },
+  { unit: "Unit 3", text: "Tourists rode a <span class='blank'>&nbsp;</span> across the desert to reach the oasis.", options: ["camel", "ferry", "pedestrian"], correct: "camel", explain: "Correct: <b>camel</b> — جمل." },
+  { unit: "Unit 3", text: "Online banking is very <span class='blank'>&nbsp;</span> because you can do it anytime.", options: ["convenient", "frequent", "traditional"], correct: "convenient", explain: "Correct: <b>convenient</b> — ملائم." },
+  { unit: "Unit 3", text: "The <span class='blank'>&nbsp;</span> crossed the street carefully at the crossing.", options: ["pedestrian", "receipt", "gate"], correct: "pedestrian", explain: "Correct: <b>pedestrian</b> — المشاة." },
+  { unit: "Unit 3", text: "Passengers must be at the <span class='blank'>&nbsp;</span> thirty minutes before boarding.", options: ["gate", "receipt", "window"], correct: "gate", explain: "Correct: <b>gate</b> — بوابة." },
+  { unit: "Unit 3", text: "Please keep your <span class='blank'>&nbsp;</span> in case you need to return the item.", options: ["receipt", "gate", "window"], correct: "receipt", explain: "Correct: <b>receipt</b> — إيصال." },
+  { unit: "Unit 3", text: "He always flies <span class='blank'>&nbsp;</span> because he prefers extra comfort.", options: ["first class", "a lot", "window"], correct: "first class", explain: "Correct: <b>first class</b> — الدرجة الأولى." },
+  { unit: "Unit 3", text: "She asked for a <span class='blank'>&nbsp;</span> seat so she could watch the clouds.", options: ["window", "gate", "receipt"], correct: "window", explain: "Correct: <b>window</b> — نافذة." },
+  { unit: "Unit 3", text: "Can I <span class='blank'>&nbsp;</span> a better route to avoid the traffic?", options: ["suggest", "freeze", "afford"], correct: "suggest", explain: "Correct: <b>suggest</b> — يقترح." },
+  { unit: "Unit 3", text: "It rained <span class='blank'>&nbsp;</span> during our trip, so we stayed indoors most days.", options: ["a lot", "a little", "a bit"], correct: "a lot", explain: "Correct: <b>a lot</b> — كثيرًا جدًا." },
+
+  // Unit 4
+  { unit: "Unit 4", text: "The <span class='blank'>&nbsp;</span> led us safely to the top of the peak.", options: ["mountain guide", "mechanic", "architecture"], correct: "mountain guide", explain: "Correct: <b>mountain guide</b> — دليل الجبل." },
+  { unit: "Unit 4", text: "We followed a narrow <span class='blank'>&nbsp;</span> through the forest.", options: ["trail", "puzzle", "answer"], correct: "trail", explain: "Correct: <b>trail</b> — مسار للمشي." },
+  { unit: "Unit 4", text: "Without water, the plant will eventually <span class='blank'>&nbsp;</span>.", options: ["die", "achieve", "study"], correct: "die", explain: "Correct: <b>die</b> — يموت." },
+  { unit: "Unit 4", text: "She worked for years to <span class='blank'>&nbsp;</span> her goal of becoming a doctor.", options: ["achieve", "die", "study"], correct: "achieve", explain: "Correct: <b>achieve</b> — يحقق." },
+  { unit: "Unit 4", text: "They met at university and later <span class='blank'>&nbsp;</span>.", options: ["fell in love", "achieved", "died"], correct: "fell in love", explain: "Correct: <b>fell in love</b> — وقع في الحب." },
+  { unit: "Unit 4", text: "He plans to <span class='blank'>&nbsp;</span> engineering at a top university.", options: ["study", "achieve", "die"], correct: "study", explain: "Correct: <b>study</b> — يدرس." },
+  { unit: "Unit 4", text: "Our new neighbors are very <span class='blank'>&nbsp;</span> and always say hello.", options: ["friendly", "kind", "intelligent"], correct: "friendly", explain: "Correct: <b>friendly</b> — ودود." },
+  { unit: "Unit 4", text: "It was very <span class='blank'>&nbsp;</span> of her to help the elderly man cross the street.", options: ["kind", "friendly", "positive"], correct: "kind", explain: "Correct: <b>kind</b> — لطيف." },
+  { unit: "Unit 4", text: "It took him an hour to solve the <span class='blank'>&nbsp;</span>.", options: ["puzzle", "answer", "trail"], correct: "puzzle", explain: "Correct: <b>puzzle</b> — لغز." },
+  { unit: "Unit 4", text: "She gave the correct <span class='blank'>&nbsp;</span> to every question.", options: ["answer", "puzzle", "trail"], correct: "answer", explain: "Correct: <b>answer</b> — إجابة." },
+  { unit: "Unit 4", text: "The car <span class='blank'>&nbsp;</span> blocked the road for hours.", options: ["accident", "puzzle", "trail"], correct: "accident", explain: "Correct: <b>accident</b> — حادث." },
+  { unit: "Unit 4", text: "Rescuers were relieved to find the hikers still <span class='blank'>&nbsp;</span> after the storm.", options: ["alive", "dead", "current"], correct: "alive", explain: "Correct: <b>alive</b> — على قيد الحياة." },
+
+  // Unit 5
+  { unit: "Unit 5", text: "Be careful, that vase is made of <span class='blank'>&nbsp;</span> and breaks easily.", options: ["glass", "leather", "metal"], correct: "glass", explain: "Correct: <b>glass</b> — زجاج." },
+  { unit: "Unit 5", text: "His jacket is made of high-quality <span class='blank'>&nbsp;</span>.", options: ["leather", "paper", "plastic"], correct: "leather", explain: "Correct: <b>leather</b> — جلد." },
+  { unit: "Unit 5", text: "The bridge is built from strong <span class='blank'>&nbsp;</span> beams.", options: ["metal", "leather", "cardboard"], correct: "metal", explain: "Correct: <b>metal</b> — معدن." },
+  { unit: "Unit 5", text: "The artist created a beautiful <span class='blank'>&nbsp;</span> out of recycled wood.", options: ["sculpture", "mixture", "display"], correct: "sculpture", explain: "Correct: <b>sculpture</b> — منحوتة." },
+  { unit: "Unit 5", text: "She uses her <span class='blank'>&nbsp;</span> to check emails while traveling.", options: ["mobile phone", "cereal box", "fountain"], correct: "mobile phone", explain: "Correct: <b>mobile phone</b> — هاتف محمول." },
+  { unit: "Unit 5", text: "He poured the last of the flakes from the <span class='blank'>&nbsp;</span>.", options: ["cereal box", "milk carton", "jar"], correct: "cereal box", explain: "Correct: <b>cereal box</b> — علبة حبوب الإفطار." },
+  { unit: "Unit 5", text: "Children love to throw coins into the <span class='blank'>&nbsp;</span> and make a wish.", options: ["fountain", "pipe", "trash"], correct: "fountain", explain: "Correct: <b>fountain</b> — نافورة." },
+  { unit: "Unit 5", text: "The weather report was sent using a <span class='blank'>&nbsp;</span>.", options: ["satellite", "fountain", "trash"], correct: "satellite", explain: "Correct: <b>satellite</b> — قمر صناعي." },
+  { unit: "Unit 5", text: "The doctor checked her <span class='blank'>&nbsp;</span> during the appointment.", options: ["weight", "length", "width"], correct: "weight", explain: "Correct: <b>weight</b> — الوزن." },
+  { unit: "Unit 5", text: "Tickets for the concert are still <span class='blank'>&nbsp;</span> online.", options: ["available", "local", "wide"], correct: "available", explain: "Correct: <b>available</b> — متاح / متوفر." },
+  { unit: "Unit 5", text: "Please put your <span class='blank'>&nbsp;</span> in the correct recycling bin.", options: ["trash", "fountain", "satellite"], correct: "trash", explain: "Correct: <b>trash</b> — قمامة." },
+
+  // Unit 6
+  { unit: "Unit 6", text: "As a <span class='blank'>&nbsp;</span>, she loved playing with dolls.", options: ["child", "teenager", "adult"], correct: "child", explain: "Correct: <b>child</b> — طفل." },
+  { unit: "Unit 6", text: "Most <span class='blank'>&nbsp;</span> enjoy spending time with their friends.", options: ["teenagers", "children", "elderly"], correct: "teenagers", explain: "Correct: <b>teenagers</b> — مراهقون." },
+  { unit: "Unit 6", text: "He built a successful <span class='blank'>&nbsp;</span> in medicine.", options: ["career", "salary", "freedom"], correct: "career", explain: "Correct: <b>career</b> — مهنة." },
+  { unit: "Unit 6", text: "She negotiated a higher <span class='blank'>&nbsp;</span> for her new job.", options: ["salary", "freedom", "career"], correct: "salary", explain: "Correct: <b>salary</b> — راتب." },
+  { unit: "Unit 6", text: "Retirement finally gave him the <span class='blank'>&nbsp;</span> to travel.", options: ["freedom", "salary", "career"], correct: "freedom", explain: "Correct: <b>freedom</b> — حرية." },
+  { unit: "Unit 6", text: "He arrived <span class='blank'>&nbsp;</span> to the meeting because of traffic.", options: ["late", "early", "mature"], correct: "late", explain: "Correct: <b>late</b> — متأخرًا." },
+  { unit: "Unit 6", text: "She has always had a <span class='blank'>&nbsp;</span> of becoming a writer.", options: ["hope", "freedom", "salary"], correct: "hope", explain: "Correct: <b>hope</b> — أمل." },
+  { unit: "Unit 6", text: "We threw a surprise <span class='blank'>&nbsp;</span> for her birthday.", options: ["party", "parade", "wedding"], correct: "party", explain: "Correct: <b>party</b> — حفلة." },
+  { unit: "Unit 6", text: "Thousands of people watched the <span class='blank'>&nbsp;</span> move through the city streets.", options: ["parade", "party", "wedding"], correct: "parade", explain: "Correct: <b>parade</b> — موكب." },
+  { unit: "Unit 6", text: "Their <span class='blank'>&nbsp;</span> was held in a beautiful garden.", options: ["wedding", "parade", "party"], correct: "wedding", explain: "Correct: <b>wedding</b> — حفل زواج." },
+  { unit: "Unit 6", text: "The documentary showed the beauty of <span class='blank'>&nbsp;</span> in the Amazon.", options: ["nature", "culture", "freedom"], correct: "nature", explain: "Correct: <b>nature</b> — طبيعة." },
+];
+
+// ---------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------
+const root = document.getElementById("quizRoot");
+let locked = false;
+
+function escapeAttr(s){ return s.replace(/"/g, "&quot;"); }
+
+QUESTIONS.forEach((q, i) => {
+  const card = document.createElement("div");
+  card.className = "question";
+  card.id = "q" + i;
+
+  let inner = `
+    <div class="q-meta"><span class="q-num">Question ${i + 1} / ${QUESTIONS.length}</span> <span style="font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--brown-mid);background:var(--paper);padding:3px 8px;border-radius:20px;border:1px solid var(--line);margin-left:8px;">${q.unit}</span></div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+  `;
+  q.options.forEach((opt) => {
+    inner += `
+      <label class="option" data-qi="${i}">
+        <input type="radio" name="q${i}" value="${escapeAttr(opt)}" onchange="onAnswerChange(${i})">
+        <span>${opt}</span>
+      </label>`;
+  });
+  inner += `</div><div class="feedback" id="feedback${i}"></div>`;
+
+  card.innerHTML = inner;
+  root.appendChild(card);
+});
+
+function onAnswerChange(i){
+  const card = document.getElementById("q" + i);
+  card.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  const checked = card.querySelector("input[name='q" + i + "']:checked");
+  if (checked) checked.closest(".option").classList.add("selected");
+  updateProgress();
+}
+
+function getAnswer(i){
+  const checked = document.querySelector("input[name='q" + i + "']:checked");
+  return checked ? checked.value : null;
+}
+
+function updateProgress(){
+  let answered = 0;
+  QUESTIONS.forEach((q, i) => { if (getAnswer(i)) answered++; });
+  document.getElementById("progressFill").style.width = (answered / QUESTIONS.length * 100) + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + QUESTIONS.length + " answered";
+  return answered;
+}
+
+function checkAnswers(){
+  if (locked) return;
+  const answered = updateProgress();
+  const hint = document.getElementById("notAnsweredHint");
+  if (answered < QUESTIONS.length) {
+    hint.classList.add("show");
+    return;
+  }
+  hint.classList.remove("show");
+
+  let score = 0;
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    const fb = document.getElementById("feedback" + i);
+    const userAns = getAnswer(i);
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) score++;
+
+    card.querySelectorAll(".option").forEach(opt => {
+      const val = opt.querySelector("input").value;
+      if (val === q.correct) opt.classList.add("was-correct");
+      else if (val === userAns) opt.classList.add("was-wrong");
+    });
+
+    fb.className = "feedback show " + (isCorrect ? "correct" : "incorrect");
+    fb.innerHTML = (isCorrect ? "<b>Correct ✓</b>" : "<b>Not quite ✗</b>") + q.explain;
+    card.classList.add("locked");
+  });
+
+  locked = true;
+  document.getElementById("checkBtn").disabled = true;
+  showScore(score);
+  document.getElementById("scorePanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showScore(score){
+  const panel = document.getElementById("scorePanel");
+  document.getElementById("scoreNum").textContent = score;
+  const pct = Math.round(score / QUESTIONS.length * 100);
+  let msg, sub;
+  if (pct >= 90) { msg = "Excellent work!"; sub = "You've mastered Present Simple & Present Continuous."; }
+  else if (pct >= 70) { msg = "Well done!"; sub = "A solid grasp — review the notes on any missed questions."; }
+  else if (pct >= 50) { msg = "Good effort."; sub = "Go back over the explanations below, then try again."; }
+  else { msg = "Keep practicing."; sub = "Review Unit 1 grammar, then take the quiz again."; }
+  document.getElementById("scoreMsg").textContent = msg;
+  document.getElementById("scoreSub").textContent = sub;
+  panel.classList.add("show");
+}
+
+function resetQuiz(){
+  locked = false;
+  document.getElementById("checkBtn").disabled = false;
+  document.getElementById("scorePanel").classList.remove("show");
+  document.getElementById("notAnsweredHint").classList.remove("show");
+  QUESTIONS.forEach((q, i) => {
+    const card = document.getElementById("q" + i);
+    card.classList.remove("locked");
+    const fb = document.getElementById("feedback" + i);
+    fb.className = "feedback";
+    fb.innerHTML = "";
+    card.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    card.querySelectorAll(".option").forEach(o => o.classList.remove("selected", "was-correct", "was-wrong"));
+  });
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
